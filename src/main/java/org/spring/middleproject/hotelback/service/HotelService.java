@@ -2,7 +2,6 @@ package org.spring.middleproject.hotelback.service;
 
 import org.apache.ibatis.session.SqlSession;
 import org.spring.middleproject.hotelback.DTO.HotelDTO;
-import org.spring.middleproject.hotelback.DTO.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,7 @@ public class HotelService {
     public SqlSession SESSION;
 
     public HotelDTO selectOne(int hotelid){
-        return SESSION.selectOne(NAMESPACE+".selectOne",hotelid);
+        return SESSION.selectOne(NAMESPACE+".selectOne", hotelid);
     }
     public List<HotelDTO> selectAll(){
         return SESSION.selectList(NAMESPACE+".selectAll");

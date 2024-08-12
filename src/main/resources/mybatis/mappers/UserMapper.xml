@@ -13,4 +13,8 @@
         SELECT * FROM user
         where user.role = #{role}
     </select>
+    <delete id="deleteByUserID" parameterType="int">
+        DELETE FROM user
+        where user.id = #{userId}
+    </delete>
 </mapper>

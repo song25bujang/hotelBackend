@@ -27,7 +27,8 @@ public class UserService {
     public void updateInfo(){
 
     }
-    public void deleteOne(){
+    public int deleteUserById(int userId){
+        return SESSION.delete(NAMESPACE+".deleteByUserID",userId);
 
     }
 
