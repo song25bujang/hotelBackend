@@ -1,7 +1,7 @@
 package org.spring.middleproject.hotelback.service;
 
-import org.apache.catalina.User;
 import org.apache.ibatis.session.SqlSession;
+import org.spring.middleproject.hotelback.DTO.HotelDTO;
 import org.spring.middleproject.hotelback.DTO.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,26 +9,25 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserService {
-    private final String NAMESPACE = "org.spring.middleproject.hotelback.mappers.UserMapper";
-
+public class HotelService {
+    private final String NAMESPACE = "org.spring.middleproject.hotelback.mappers.HotelMapper";
     @Autowired
     public SqlSession SESSION;
 
-    public UserDTO selectOne(int userid){
-        return SESSION.selectOne(NAMESPACE+".selectOne",userid);
+    public HotelDTO selectOne(int hotelid){
+        return SESSION.selectOne(NAMESPACE+".selectOne",hotelid);
     }
-    public List<UserDTO> selectAll(){
+    public List<HotelDTO> selectAll(){
         return SESSION.selectList(NAMESPACE+".selectAll");
     }
-    public List<UserDTO> selectAllByRole(String role){
-        return SESSION.selectList(NAMESPACE+".selectByRole",role);
+    public List<HotelDTO> selectAllHotelInBasketByUserID(int userId){
+        return SESSION.selectList(NAMESPACE+".hotelInBasket",userId);
     }
+
     public void updateInfo(){
 
     }
     public void deleteOne(){
 
     }
-
 }

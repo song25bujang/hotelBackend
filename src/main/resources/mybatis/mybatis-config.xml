@@ -5,7 +5,8 @@
 <configuration>
     <typeAliases>
         <typeAlias type="org.spring.middleproject.hotelback.DTO.UserDTO" alias="userDTO"></typeAlias>
-        
+        <typeAlias type="org.spring.middleproject.hotelback.DTO.BasketDTO" alias="basketDTO"></typeAlias>
+        <typeAlias type="org.spring.middleproject.hotelback.DTO.HotelDTO" alias="hotelDTO"></typeAlias>
     </typeAliases>
 
 </configuration>

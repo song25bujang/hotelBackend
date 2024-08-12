@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.spring.middleproject.hotelback.mappers.HotelMapper">
+    <select id="selectOne" parameterType="int" resultType="hotelDTO">
+        SELECT * FROM hotel
+        WHERE hotel.id = #{id}
+    </select>
+    <select id="selectAll" resultType="hotelDTO">
+        SELECT * FROM hotel
+    </select>
+     <select id="hotelInBasket" parameterType="int" resultType="hotelDTO">
+            SELECT * FROM hotel
+            WHERE hotel.id in (SELECT hotel_id FROM basket
+            WHERE basket.user_id = #{userId})
+     </select>
+</mapper>
