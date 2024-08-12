@@ -11,10 +11,11 @@ import java.util.List;
 @Service
 public class UserService {
     private final String NAMESPACE = "org.spring.middleproject.hotelback.mappers.UserMapper";
-
-    @Autowired
     public SqlSession SESSION;
-
+    @Autowired
+    public UserService(SqlSession session){
+        SESSION = session;
+    }
     public UserDTO selectOne(int userid){
         return SESSION.selectOne(NAMESPACE+".selectOne",userid);
     }
@@ -30,6 +31,9 @@ public class UserService {
     public int deleteUserById(int userId){
         return SESSION.delete(NAMESPACE+".deleteByUserID",userId);
 
+    }
+    public UserDTO selectByUsername(String username) {
+        return SESSION.selectOne(NAMESPACE + ".selectByUsername", username);
     }
 
 }

@@ -4,14 +4,23 @@ import org.spring.middleproject.hotelback.DTO.BasketDTO;
 import org.spring.middleproject.hotelback.DTO.HotelDTO;
 import org.spring.middleproject.hotelback.DTO.UserDTO;
 import org.spring.middleproject.hotelback.service.HotelService;
+import org.spring.middleproject.hotelback.service.UserDetailsServiceImpl;
 import org.spring.middleproject.hotelback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import java.util.List;
 
@@ -21,11 +30,59 @@ public class UserController {
     private UserService userService;
     @Autowired
     private HotelService hotelService;
-    @GetMapping("/user")
-    public String test(){
-        String data = "user";
-        System.out.println(data);
-        return data;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    public UserController(AuthenticationManager authenticationManager, UserDetailsServiceImpl userDetailsService) {
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+    }
+    @PostMapping("/user/auth")
+    public ResponseEntity<?> authenticateUser(@RequestParam String username, @RequestParam String password) {
+        // 로그로 입력된 비밀번호 출력
+        System.out.println("Raw Password: " + password);
+
+        // 사용자 인증을 수행
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        UserDTO userDetails = (UserDTO) userDetailsService.loadUserByUsername(username);
+
+        // 인증 성공 시 사용자 정보를 반환
+        return ResponseEntity.ok().body(userDetails);
+    }
+    @RequestMapping("/user/authSuccess")
+    public ResponseEntity<Map<String, Object>> authSuccess(Authentication authentication) {
+        System.out.println("login Success");
+        Map<String, Object> resultMap = new HashMap<>();
+        UserDTO userDTO = (UserDTO) authentication.getPrincipal();
+
+        resultMap.put("result","success");
+        resultMap.put("id", userDTO.getId());
+        resultMap.put("nickname", userDTO.getNickname());
+        resultMap.put("role", userDTO.getRole());
+
+        return ResponseEntity.ok(resultMap);
+    }
+
+    @RequestMapping("/user/authFail")
+    public ResponseEntity<Map<String, Object>> authFail() {
+        System.out.println("Auth has failed");
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("result","fail");
+
+        return ResponseEntity.ok(resultMap);
+    }
+
+    @RequestMapping("/user/logOutSuccess")
+    public ResponseEntity<Void> logOutSuccess(Authentication authentication) {
+        System.out.println(authentication);
+        System.out.println("log out success");
+
+        return ResponseEntity.ok().build();
     }
     @GetMapping("/user/{userId}") //id(PK)에 따른 One User
     public UserDTO pickuserById(@PathVariable int userId){
@@ -38,47 +95,6 @@ public class UserController {
             System.out.println(h.toString());
         }
         return userDTO;
-    }
-    @GetMapping("/user/basket/{userId}") //id(PK)에 따른 One User
-    public List<HotelDTO> pickBasketByuserId(@PathVariable int userId){
-        //hotelinMyBasket
-        System.out.println("hotelinMyBasket");
-        List<HotelDTO> hotelinMyBasket = hotelService.selectAllHotelInBasketByUserID(userId);
-        System.out.printf("%d번 고객님의 장바구니 호텔 목록\n",userId);
-        for(HotelDTO h : hotelinMyBasket){
-            System.out.println(h.toString());
-        }
-        return hotelinMyBasket;
-    }
-
-    @GetMapping("/admin/users") //ADMIN - role에 따른 User 목록
-    public List<UserDTO> showAlluser(){
-        List<UserDTO> alluserlist = userService.selectAll();
-//        for(UserDTO u : userlist){
-//            System.out.println("[userlist(B Role)] - " + u.toString());
-//        }
-        return alluserlist;
-    }
-
-    @GetMapping("/admin/user/{roleString}") //ADMIN - role에 따른 User 목록
-    public List<UserDTO> pickuserByRole(@PathVariable String roleString){
-        List<UserDTO> userlist = userService.selectAllByRole(roleString);
-        for(UserDTO u : userlist){
-            System.out.println("[userlist(B Role)] - " + u.toString());
-        }
-        return userlist;
-    }
-    @DeleteMapping("/admin/user/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable int userId) {
-        int isDeleted = userService.deleteUserById(userId);
-        System.out.println(isDeleted);
-        if (isDeleted > 0) {
-            // 삭제 성공 시  204 No Content를 반환
-            return ResponseEntity.noContent().build();
-        } else {
-            // 삭제할 사용자가 존재하지 않으면 404 Not Found를 반환
-            return ResponseEntity.notFound().build();
-        }
     }
 
 

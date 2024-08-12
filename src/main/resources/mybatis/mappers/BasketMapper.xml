@@ -10,5 +10,9 @@
         SELECT * FROM basket
         where basket.user_id = #{id}
     </select>
-    
+<!--    <delete id="deleteOne" parameterType="map">-->
+<!--        DELETE FROM basket-->
+<!--        WHERE basket.user_id = #{userId}-->
+<!--          AND basket.hotel_id = #{productId}-->
+<!--    </delete>-->
 </mapper>
