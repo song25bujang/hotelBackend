@@ -6,7 +6,9 @@ import org.spring.middleproject.hotelback.DTO.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -31,6 +33,13 @@ public class UserService {
     public int deleteUserById(int userId){
         return SESSION.delete(NAMESPACE+".deleteByUserID",userId);
 
+    }
+    public int updateUserRole(int userId, String role){
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("role", role);
+        //System.out.println("요청 들어옴 - "+"userId"+userId+", role(String)"+role);
+        return SESSION.update(NAMESPACE + ".updateUserRole", params);
     }
     public UserDTO selectByUsername(String username) {
         return SESSION.selectOne(NAMESPACE + ".selectByUsername", username);

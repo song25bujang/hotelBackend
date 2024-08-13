@@ -21,4 +21,9 @@
         SELECT * FROM user
         WHERE username = #{username}
     </select>
+    <update id="updateUserRole" parameterType="hashmap">
+        UPDATE user
+        SET user.role = #{role}
+        WHERE user.id = #{userId}
+    </update>
 </mapper>
